@@ -1,30 +1,47 @@
-_roteador = {}
+rotas = []
+# rotas = {}
 
 
-def rota(url):
+def rota(url, *args, **kwargs):
     def decorador(func):
-        _roteador[url] = func
-        return func
+        rotas.append((url, func(), args, kwargs))
+        
 
     return decorador
+#
+# def rota(url, *args, **kwargs):
+#     def decorador(func):
+#         rotas = url, args, kwargs
+#         func(rota)
+#
+#     return decorador
+
+def rotear(url, *args, **kwargs):
+    # for url in rotas:
+    #     print(rotas)
+    #
+    # print(url, args, kwargs)
+    # return url, args, kwargs
+    return url, args
 
 
-def rotear(url, nome=None, ano: int = 0, *args, **kwargs):
-    if url == '/':
+@rota('/')
+def home(*args):
+    def home_rota():
         return 'home executada'
-    elif url == '/carro':
-        if nome is None:
-            raise TypeError('Nome não pode ser vazio')
-        else:
-            return f'{nome} ano {ano}'
-    elif url == '/usuario':
-        if nome is None:
-            raise TypeError('Usuário não pode ser vazio')
-        else:
-            return f'salvando {nome}'
-    else:
-        # print(f'Rota inexistente: {url}')
-        raise RotaInexistente(f'Rota inexistente: {url}')
+    return home_rota()
+
+
+@rota('/carro')
+def carro(*args):
+    def carro_rota():
+        return 'rota do carro'
+    return carro_rota()
+
+
+@rota('/usuario')
+def usuario(*args, **kwargs):
+    return f'salvando {args} {kwargs}'
 
 
 class RotaInexistente(Exception):
@@ -33,14 +50,15 @@ class RotaInexistente(Exception):
 
 
 if __name__ == '__main__':
-    carro = rotear('/carro', 'Fusca', 88)
-    print(carro)
+    print(rotas)
+    principal = rotear('/')
+    print(principal)
+
+    meucarro = rotear('/carro', 'corsa', 88)
+    print(meucarro)
+
     pessoa = rotear('/usuario', 'Tiago')
     print(pessoa)
-    carronomeado = rotear('/carro', ano=2000, nome='Gol')
-    print(carronomeado)
-    # erro = rotear('/asdafsdfds')
-    # print(erro)
-    # carroerro = rotear('/carro')
-    usuario_sem_nome = rotear('/usuario', 'foo')
-    print(usuario_sem_nome)
+
+    erro_url = rotear('/inexistente')
+    print(erro_url)
