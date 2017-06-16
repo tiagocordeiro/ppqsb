@@ -1,47 +1,42 @@
 rotas = []
-# rotas = {}
 
 
 def rota(url, *args, **kwargs):
     def decorador(func):
-        rotas.append((url, func(), args, kwargs))
-        
+        rotas.append((url, func()))
 
     return decorador
-#
-# def rota(url, *args, **kwargs):
-#     def decorador(func):
-#         rotas = url, args, kwargs
-#         func(rota)
-#
-#     return decorador
+
 
 def rotear(url, *args, **kwargs):
-    # for url in rotas:
-    #     print(rotas)
-    #
-    # print(url, args, kwargs)
-    # return url, args, kwargs
-    return url, args
+    url_path = [item for item in rotas if item[0] == url]
+    try:
+        url_path == url
+        return url_path[0][1]()
+    except:
+        RotaInexistente('Rota inexistente')
+
+    # return f'Imprimindo {url_path[0][0]}'
 
 
 @rota('/')
-def home(*args):
+def home():
     def home_rota():
         return 'home executada'
-    return home_rota()
-
+    return home_rota
 
 @rota('/carro')
-def carro(*args):
+def carro(*args, **kwargs):
     def carro_rota():
-        return 'rota do carro'
-    return carro_rota()
+        return 'Rota do carro'
+    return carro_rota
 
 
 @rota('/usuario')
 def usuario(*args, **kwargs):
-    return f'salvando {args} {kwargs}'
+    def usuario_rota():
+        return 'Rota de usuario'
+    return usuario_rota
 
 
 class RotaInexistente(Exception):
@@ -50,7 +45,8 @@ class RotaInexistente(Exception):
 
 
 if __name__ == '__main__':
-    print(rotas)
+    # print(rotas)
+
     principal = rotear('/')
     print(principal)
 
@@ -60,5 +56,5 @@ if __name__ == '__main__':
     pessoa = rotear('/usuario', 'Tiago')
     print(pessoa)
 
-    erro_url = rotear('/inexistente')
-    print(erro_url)
+    # erro_url = rotear('/inexistente')
+    # print(erro_url)
