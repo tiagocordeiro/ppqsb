@@ -1,17 +1,19 @@
+from functools import partial
 rotas = {}
 
 
 def rota(url, *args, **kwargs):
     def decorador(func):
         rotas[url] = func
+        return func(), args, kwargs
 
     return decorador
 
 
 def rotear(url, *args, **kwargs):
     if url in rotas:
-        print(rotas[url])
-        return url
+        return partial(rotas[url], args, kwargs)
+        # return url, rotas[url], args, kwargs
     else:
         raise RotaInexistente(f'Rota inexistente: {url}')
     # return rotas[url]()
@@ -53,18 +55,17 @@ class RotaInexistente(Exception):
 
 
 if __name__ == '__main__':
-    # print(rotas)
+    print(rotas)    #imprimindo rotas para conferencia
 
     principal = rotear('/')
     print(principal)
-    # rotear('/')
-    # home()
+
 
     meucarro = rotear('/carro', 'corsa', 88)
     print(meucarro)
 
-    # pessoa = rotear('/usuario', 'Tiago')
-    # print(pessoa)
+    pessoa = rotear('/usuario', 'Tiago')
+    print(pessoa)
 
-    erro_url = rotear('/inexistente')
-    print(erro_url)
+    # erro_url = rotear('/inexistente')
+    # print(erro_url)
