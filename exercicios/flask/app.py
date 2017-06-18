@@ -1,4 +1,3 @@
-from functools import partial
 import functools
 
 rotas = {}
@@ -66,17 +65,20 @@ class RotaInexistente(Exception):
 
 
 if __name__ == '__main__':
-    # print(rotas)    #imprimindo rotas para conferencia
+    print(rotas)    #imprimindo rotas para conferencia
 
     principal = rotear('/')
     print(principal)
     print(principal.__name__)
 
-    meucarro = rotear('/carro', 'corsa', 88)
+    meucarro = carro('corsa', 2000)
     print(meucarro)
+
+    outrocarro = rotear('/carro', 'Fusca', 79)
+    print(outrocarro)
 
     pessoa = rotear('/usuario', 'Tiago')
     print(pessoa)
 
-    # erro_url = rotear('/inexistente')
-    # print(erro_url)
+    erro_url = rotear('/inexistente')
+    print(erro_url)
