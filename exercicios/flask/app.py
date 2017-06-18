@@ -1,37 +1,41 @@
 from functools import partial
+import functools
+
 rotas = {}
 
 
 def rota(url, *args, **kwargs):
+    @functools.wraps(rota)
     def decorador(func):
         rotas[url] = func
-        return func(), args, kwargs
+        return func
 
     return decorador
 
 
 def rotear(url, *args, **kwargs):
+    print(kwargs)
     if url in rotas:
-        return partial(rotas[url], args, kwargs)
-        # return url, rotas[url], args, kwargs
+        if not args:
+            return rotas[url]()
+        else:
+            nome = args[0]
+            if len(args) == 1:
+                return rotas[url] (nome)
+            elif len(args) == 2:
+                ano = args[1]
+                return rotas[url] (nome, ano)
+            else:
+                pass
     else:
         raise RotaInexistente(f'Rota inexistente: {url}')
-    # return rotas[url]()
-    # return rota()
-    # url_path = [item for item in rotas if item[0] == url]
-    # try:
-    #     url == url_path
-    #     return url_path[0][1]()
-    # except:
-    #     raise RotaInexistente(f'Rota inexistente: {url}')
-
-    # return f'Imprimindo {url_path[0][0]}'
 
 
 @rota('/')
 def home():
     def home_rota():
         return 'home executada'
+
     return home_rota
 
 
@@ -39,6 +43,7 @@ def home():
 def carro():
     def carro_rota(nome, ano):
         return f'{nome} ano {ano}'
+
     return carro_rota
 
 
@@ -46,6 +51,7 @@ def carro():
 def usuario():
     def usuario_rota(nome):
         return f'salvando {nome}'
+
     return usuario_rota
 
 
@@ -55,10 +61,11 @@ class RotaInexistente(Exception):
 
 
 if __name__ == '__main__':
-    print(rotas)    #imprimindo rotas para conferencia
+    # print(rotas)    #imprimindo rotas para conferencia
 
     principal = rotear('/')
     print(principal)
+    print(principal.__name__)
 
 
     meucarro = rotear('/carro', 'corsa', 88)
