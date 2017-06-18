@@ -13,12 +13,11 @@ def rota(url, *args, **kwargs):
 
 
 def rotear(url, *args, **kwargs):
-    if 'nome' and 'ano' in kwargs:
-        return rotas[url](nome=kwargs['nome'], ano=kwargs['ano'])
-    elif 'nome' in kwargs:
-        return rotas[url](nome=kwargs['nome'])
-
     if url in rotas:
+        if 'nome' and 'ano' in kwargs:
+            return rotas[url](nome=kwargs['nome'], ano=kwargs['ano'])
+        elif 'nome' in kwargs:
+            return rotas[url](nome=kwargs['nome'])
         if not args:
             return rotas[url]()
         else:
@@ -70,9 +69,6 @@ if __name__ == '__main__':
     principal = rotear('/')
     print(principal)
     print(principal.__name__)
-
-    meucarro = carro('corsa', 2000)
-    print(meucarro)
 
     outrocarro = rotear('/carro', 'Fusca', 79)
     print(outrocarro)
